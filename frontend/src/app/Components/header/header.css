@@ -5,12 +5,69 @@ header {
   position: fixed;
   width: 100%;
   padding: 0 2%;
-  background-color: rgb(#033aa898);
+  background-color: rgba(3, 58, 168, 0.795);
   height: 10vh;
   min-height: 60px;
   box-shadow: 0 2px 5px rgb(0, 0, 0);
   box-sizing: border-box;
   z-index: 1000;
+  font-family: "Josefin Sans", sans-serif;
+}
+
+.title-logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.dropdowns {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-right: 2%;
+}
+
+.dropdown {
+  position: relative;
+  cursor: pointer;
+  color: white;
+  font-weight: 500;
+  user-select: none;
+}
+
+.dropdown span {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  list-style: none;
+  padding: 0.5rem 0;
+  margin: 0;
+  min-width: 120px;
+  z-index: 1001;
+}
+
+.dropdown-menu li {
+  padding: 0.5rem 1rem;
+  color: black;
+  white-space: nowrap;
+}
+
+.dropdown-menu li:hover {
+  background-color: rgba(3, 58, 168, 0.15);
+}
+
+.dropdown:hover .dropdown-menu {
+  display: block;
 }
 
 .title {
