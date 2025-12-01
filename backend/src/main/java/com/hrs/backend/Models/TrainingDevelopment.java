@@ -14,13 +14,20 @@ public class TrainingDevelopment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
 
+    @Column(name = "title")
     private String title;
+    @Column(name = "attend_from")
     private LocalDate attendFrom;
-    private LocalDate attenTo;
+    @Column(name = "attend_to")
+    private LocalDate attendTo;
+    @Column(name = "hours")
     private Integer hours;
+    @Column(name = "type_of")
     private String typeOf;
+    @Column(name = "sponsored_by")
     private String sponsoredBy;
 
     @ManyToOne

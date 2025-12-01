@@ -14,6 +14,7 @@ public class EducationEntry {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
 
     @ManyToOne
@@ -24,11 +25,18 @@ public class EducationEntry {
     @JoinColumn(name = "level_id")
     private EducationLevel educationLevel;
 
+    @Column(name = "school_name")
     private String schoolName;
+    @Column(name = "course")
     private String course;
+    @Column(name = "attendance_from")
     private LocalDate attendanceFrom;
+    @Column(name = "attendance_to")
     private LocalDate attendanceTo;
+    @Column(name = "level_earned")
     private String levelEarned;
+    @Column(name = "graduate_date")
     private LocalDate graduateDate;
+    @Column(name = "scholarship_honors")
     private String scholarshipHonors;
 }

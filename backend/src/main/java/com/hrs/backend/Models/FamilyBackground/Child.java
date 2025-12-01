@@ -14,9 +14,12 @@ public class Child {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
 
+    @Column(name = "child_name")
     private String childName;
+    @Column(name = "birth_date")
     private LocalDate birthDate;
 
     @ManyToOne
