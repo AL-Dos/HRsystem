@@ -15,6 +15,6 @@ public class Sex {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "option")
+    private String option;
 }
