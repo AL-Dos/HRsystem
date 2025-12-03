@@ -17,4 +17,10 @@ public class Person {
 
     @Column(name = "photo_url")
     private String photoUrl;
+
+    @Column(name = "reference_number")
+    private String referenceNumber;
+
+    @Column(name = "signature")
+    private String signature;
 }
