@@ -4,7 +4,12 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.hrs.backend.DTOs.Training.TrainDevCreateDTO;
+import com.hrs.backend.DTOs.Training.TrainDevDTO;
+import com.hrs.backend.DTOs.Training.TrainDevUpdateDTO;
+import com.hrs.backend.Mappers.ProfessionalInfo.TrainDevMapper;
 import com.hrs.backend.Models.TrainingDevelopment;
+import com.hrs.backend.Repos.PersonRepo;
 import com.hrs.backend.Repos.TrainDevRepo;
 
 import lombok.RequiredArgsConstructor;
@@ -13,25 +18,28 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TrainDevService {
     private final TrainDevRepo repo;
+    private final PersonRepo personRepo;
+    private final TrainDevMapper mapper;
 
-    public List<TrainingDevelopment> findAll() { return repo.findAll(); }
+    public List<TrainDevDTO> getAll() { return repo.findAll().stream().map(mapper::toDTO).toList(); }
 
-    public TrainingDevelopment findById(Integer id) {
-        if (id == null) throw new RuntimeException("Id cannot be null!");
-        return repo.findById(id).orElseThrow(() -> new RuntimeException("Citizenship not found!")); 
+    public TrainDevDTO get(Integer id) {
+        TrainingDevelopment entity = repo.findById(id).orElseThrow(() -> new RuntimeException("Training not found"));
+        return mapper.toDTO(entity);
     }
 
-    public TrainingDevelopment create(TrainingDevelopment data) { 
-        if (data == null) throw new RuntimeException("Data cannot be null!");
-        return repo.save(data); 
+    public TrainDevDTO create(TrainDevCreateDTO dto) {
+        personRepo.findById(dto.getPersonId()).orElseThrow(() -> new RuntimeException("Invalid Person ID"));
+        TrainingDevelopment entity = mapper.toEntity(dto);
+        return mapper.toDTO(repo.save(entity));
     }
 
-    public TrainingDevelopment update(Integer id, TrainingDevelopment data) {
-        TrainingDevelopment existing = findById(id);
-        data.setId(existing.getId());
-        return repo.save(data);
+    public TrainDevDTO update(Integer id, TrainDevUpdateDTO dto) {
+        TrainingDevelopment entity = repo.findById(id).orElseThrow(() -> new RuntimeException("Training not found"));
+        if (dto.getPersonId() != null) personRepo.findById(dto.getPersonId()).orElseThrow(() -> new RuntimeException("Invalid Person ID"));
+        mapper.updateEntityFromDTO(dto, entity);
+        return mapper.toDTO(repo.save(entity));
     }
     
-    @SuppressWarnings("null")
-    public void delete(Integer id) { repo.delete(findById(id)); }       
+    public void delete(Integer id) { repo.deleteById(id); }       
 }

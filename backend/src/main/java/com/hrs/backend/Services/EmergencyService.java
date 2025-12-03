@@ -4,8 +4,13 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.hrs.backend.DTOs.Emergency.EmergencyCreateDTO;
+import com.hrs.backend.DTOs.Emergency.EmergencyDTO;
+import com.hrs.backend.DTOs.Emergency.EmergencyUpdateDTO;
+import com.hrs.backend.Mappers.ProfessionalInfo.EmergencyMapper;
 import com.hrs.backend.Models.EmergencyInfo;
 import com.hrs.backend.Repos.EmergencyRepo;
+import com.hrs.backend.Repos.PersonRepo;
 
 import lombok.RequiredArgsConstructor;
 
@@ -13,26 +18,30 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class EmergencyService {
     private final EmergencyRepo repo;
+    private final PersonRepo personRepo;
+    private final EmergencyMapper mapper;
 
-    public List<EmergencyInfo> findAll() { return repo.findAll(); }
-
-    public EmergencyInfo findById(Integer id) {
-        if (id == null) throw new RuntimeException("Id cannot be null!");
-        return repo.findById(id).orElseThrow(() -> new RuntimeException("Citizenship not found!")); 
+    public List<EmergencyDTO> getAll() {
+        return repo.findAll().stream().map(mapper::toDTO).toList();
     }
 
-    public EmergencyInfo create(EmergencyInfo data) { 
-        if (data == null) throw new RuntimeException("Data cannot be null!");
-        return repo.save(data); 
+    public EmergencyDTO get(Integer id) {
+        EmergencyInfo entity = repo.findById(id).orElseThrow(() -> new RuntimeException("Emergency contact not found"));
+        return mapper.toDTO(entity);
     }
 
-    public EmergencyInfo update(Integer id, EmergencyInfo data) {
-        EmergencyInfo existing = findById(id);
-        data.setId(existing.getId());
-        return repo.save(data);
+    public EmergencyDTO create(EmergencyCreateDTO dto) {
+        personRepo.findById(dto.getPersonId()).orElseThrow(() -> new RuntimeException("Invalid Person ID"));
+        EmergencyInfo entity = mapper.toEntity(dto);
+        return mapper.toDTO(repo.save(entity));
+    }
+
+    public EmergencyDTO update(Integer id, EmergencyUpdateDTO dto) {
+        EmergencyInfo entity = repo.findById(id).orElseThrow(() -> new RuntimeException("Emergency contact not found"));
+        if (dto.getPersonId() != null) personRepo.findById(dto.getPersonId()).orElseThrow(() -> new RuntimeException("Invalid Person ID"));
+        mapper.updateEntityFromDTO(dto, entity);
+        return mapper.toDTO(repo.save(entity));
     }
     
-    @SuppressWarnings("null")
-    public void delete(Integer id) { repo.delete(findById(id)); }     
-
+    public void delete(Integer id) { repo.deleteById(id); }     
 }

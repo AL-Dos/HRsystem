@@ -4,8 +4,14 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.hrs.backend.DTOs.EducBackground.EducationEntryCreateDTO;
+import com.hrs.backend.DTOs.EducBackground.EducationEntryDTO;
+import com.hrs.backend.DTOs.EducBackground.EducationEntryUpdateDTO;
+import com.hrs.backend.Mappers.Education.EducEntryMapper;
 import com.hrs.backend.Models.EducBackground.EducationEntry;
+import com.hrs.backend.Repos.EBRepo;
 import com.hrs.backend.Repos.EducEntryRepo;
+import com.hrs.backend.Repos.EducLevelRepo;
 
 import lombok.RequiredArgsConstructor;
 
@@ -13,25 +19,33 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class EducEntryService {
     private final EducEntryRepo repo;
+    private final EducEntryMapper mapper;
+    private final EducLevelRepo educLevelRepo;
+    private final EBRepo ebRepo;
 
-    public List<EducationEntry> findAll() { return repo.findAll(); }
-
-    public EducationEntry findById(Integer id) {
-        if (id == null) throw new RuntimeException("Id cannot be null!");
-        return repo.findById(id).orElseThrow(() -> new RuntimeException("Citizenship not found!")); 
+    public List<EducationEntryDTO> getAll() {
+        return repo.findAll().stream().map(mapper::toDTO).toList();
     }
 
-    public EducationEntry create(EducationEntry data) { 
-        if (data == null) throw new RuntimeException("Data cannot be null!");
-        return repo.save(data); 
+    public EducationEntryDTO get(Integer id) {
+        EducationEntry entity = repo.findById(id).orElseThrow(() -> new RuntimeException("EducationEntry not found"));
+        return mapper.toDTO(entity);
     }
 
-    public EducationEntry update(Integer id, EducationEntry data) {
-        EducationEntry existing = findById(id);
-        data.setId(existing.getId());
-        return repo.save(data);
+    public EducationEntryDTO create(EducationEntryCreateDTO dto) {
+        ebRepo.findById(dto.getEducBackgroundId()).orElseThrow(() -> new RuntimeException("Invalid EducBackground ID"));
+        educLevelRepo.findById(dto.getLevelId()).orElseThrow(() -> new RuntimeException("Invalid EducationLevel ID"));
+        EducationEntry entity = mapper.toEntity(dto);
+        return mapper.toDTO(repo.save(entity));
+    }
+
+    public EducationEntryDTO update(Integer id, EducationEntryUpdateDTO dto) {
+        EducationEntry entity = repo.findById(id).orElseThrow(() -> new RuntimeException("EducationEntry not found"));
+        if (dto.getEducBackgroundId() != null) ebRepo.findById(dto.getEducBackgroundId()).orElseThrow(() -> new RuntimeException("Invalid EducBackground ID"));
+        if (dto.getLevelId() != null) educLevelRepo.findById(dto.getLevelId()).orElseThrow(() -> new RuntimeException("Invalid EducationLevel ID"));
+        mapper.updateEntityFromDTO(dto, entity);
+        return mapper.toDTO(repo.save(entity));
     }
     
-    @SuppressWarnings("null")
-    public void delete(Integer id) { repo.delete(findById(id)); }    
+    public void delete(Integer id) { repo.deleteById(id); }    
 }

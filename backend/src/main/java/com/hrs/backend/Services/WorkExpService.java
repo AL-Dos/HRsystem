@@ -4,7 +4,12 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.hrs.backend.DTOs.WorkExp.WorkExpCreateDTO;
+import com.hrs.backend.DTOs.WorkExp.WorkExpDTO;
+import com.hrs.backend.DTOs.WorkExp.WorkExpUpdateDTO;
+import com.hrs.backend.Mappers.ProfessionalInfo.WorkExpMapper;
 import com.hrs.backend.Models.WorkExperience;
+import com.hrs.backend.Repos.PersonRepo;
 import com.hrs.backend.Repos.WorkExpRepo;
 
 import lombok.RequiredArgsConstructor;
@@ -13,25 +18,30 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class WorkExpService {
     private final WorkExpRepo repo;
+    private final PersonRepo personRepo;
+    private final WorkExpMapper mapper;
 
-    public List<WorkExperience> findAll() { return repo.findAll(); }
-
-    public WorkExperience findById(Integer id) {
-        if (id == null) throw new RuntimeException("Id cannot be null!");
-        return repo.findById(id).orElseThrow(() -> new RuntimeException("Citizenship not found!")); 
+    public List<WorkExpDTO> getAll() {
+        return repo.findAll().stream().map(mapper::toDTO).toList();
     }
 
-    public WorkExperience create(WorkExperience data) { 
-        if (data == null) throw new RuntimeException("Data cannot be null!");
-        return repo.save(data); 
+    public WorkExpDTO get(Integer id) {
+        WorkExperience entity = repo.findById(id).orElseThrow(() -> new RuntimeException("Work Experience not found"));
+        return mapper.toDTO(entity);
     }
 
-    public WorkExperience update(Integer id, WorkExperience data) {
-        WorkExperience existing = findById(id);
-        data.setId(existing.getId());
-        return repo.save(data);
+    public WorkExpDTO create(WorkExpCreateDTO dto) {
+        personRepo.findById(dto.getPersonId()).orElseThrow(() -> new RuntimeException("Invalid Person ID"));
+        WorkExperience entity = mapper.toEntity(dto);
+        return mapper.toDTO(repo.save(entity));
     }
-    
-    @SuppressWarnings("null")
-    public void delete(Integer id) { repo.delete(findById(id)); }      
+
+    public WorkExpDTO update(Integer id, WorkExpUpdateDTO dto) {
+        WorkExperience entity = repo.findById(id).orElseThrow(() -> new RuntimeException("Work Experience not found"));
+        if (dto.getPersonId() != null) personRepo.findById(dto.getPersonId()).orElseThrow(() -> new RuntimeException("Invalid Person ID"));
+        mapper.updateEntityFromDTO(dto, entity);
+        return mapper.toDTO(repo.save(entity));
+    }
+
+    public void delete(Integer id) { repo.deleteById(id); }      
 }

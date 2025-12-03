@@ -4,8 +4,13 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.hrs.backend.DTOs.CivilService.CivilServiceCreateDTO;
+import com.hrs.backend.DTOs.CivilService.CivilServiceDTO;
+import com.hrs.backend.DTOs.CivilService.CivilServiceUpdateDTO;
+import com.hrs.backend.Mappers.ProfessionalInfo.CivilServMapper;
 import com.hrs.backend.Models.CivilService;
 import com.hrs.backend.Repos.CivilServRepo;
+import com.hrs.backend.Repos.PersonRepo;
 
 import lombok.RequiredArgsConstructor;
 
@@ -13,25 +18,27 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CivilServService {
     private final CivilServRepo repo;
+    private final CivilServMapper mapper;
+    private final PersonRepo personRepo;
 
-    public List<CivilService> findAll() { return repo.findAll(); }
+    public List<CivilServiceDTO> getAll() { return repo.findAll().stream().map(mapper::toDTO).toList(); }
 
-    public CivilService findById(Integer id) {
-        if (id == null) throw new RuntimeException("Id cannot be null!");
-        return repo.findById(id).orElseThrow(() -> new RuntimeException("Citizenship not found!")); 
-    }
-
-    public CivilService create(CivilService data) { 
-        if (data == null) throw new RuntimeException("Data cannot be null!");
-        return repo.save(data); 
-    }
-
-    public CivilService update(Integer id, CivilService data) {
-        CivilService existing = findById(id);
-        data.setId(existing.getId());
-        return repo.save(data);
-    }
+    public CivilServiceDTO get(Integer id) {
+        CivilService entity = repo.findById(id).orElseThrow(() -> new RuntimeException("CivilService not found"));
+        return mapper.toDTO(entity);
+    }  
     
-    @SuppressWarnings("null")
-    public void delete(Integer id) { repo.delete(findById(id)); }    
+    public CivilServiceDTO create(CivilServiceCreateDTO dto) {
+        personRepo.findById(dto.getPersonId()).orElseThrow(() -> new RuntimeException("Invalid Person ID"));
+        CivilService entity = mapper.toEntity(dto);
+        return mapper.toDTO(repo.save(entity));
+    }
+
+    public CivilServiceDTO update(Integer id, CivilServiceUpdateDTO dto) {
+        CivilService entity = repo.findById(id).orElseThrow(() -> new RuntimeException("CivilService not found"));
+        if (dto.getPersonId() != null) personRepo.findById(dto.getPersonId()).orElseThrow(() -> new RuntimeException("Invalid Person ID"));
+        mapper.updateEntityFromDTO(dto, entity);
+        return mapper.toDTO(repo.save(entity));
+    }
+    public void delete(Integer id) { repo.deleteById(id); }    
 }

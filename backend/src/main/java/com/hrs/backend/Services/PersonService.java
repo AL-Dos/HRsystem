@@ -4,6 +4,10 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.hrs.backend.DTOs.Person.PersonCreateDTO;
+import com.hrs.backend.DTOs.Person.PersonDTO;
+import com.hrs.backend.DTOs.Person.PersonUpdateDTO;
+import com.hrs.backend.Mappers.MainEntities.PersonMapper;
 import com.hrs.backend.Models.Person;
 import com.hrs.backend.Repos.PersonRepo;
 
@@ -13,25 +17,25 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PersonService {
     private final PersonRepo repo;
+    private final PersonMapper mapper;
 
-    public List<Person> findAll() { return repo.findAll(); }
+    public List<PersonDTO> getAll() { return repo.findAll().stream().map(mapper::toDTO).toList(); }
 
-    public Person findById(Integer id) {
-        if (id == null) throw new RuntimeException("Id cannot be null!");
-        return repo.findById(id).orElseThrow(() -> new RuntimeException("Citizenship not found!")); 
+    public PersonDTO get(Integer id) {
+        Person entity = repo.findById(id).orElseThrow(() -> new RuntimeException("Person not found!")); 
+    return mapper.toDTO(entity); 
     }
 
-    public Person create(Person data) { 
-        if (data == null) throw new RuntimeException("Data cannot be null!");
-        return repo.save(data); 
+    public PersonDTO create(PersonCreateDTO dto) { 
+        Person entity = mapper.toEntity(dto);
+        return mapper.toDTO(repo.save(entity)); 
     }
 
-    public Person update(Integer id, Person data) {
-        Person existing = findById(id);
-        data.setId(existing.getId());
-        return repo.save(data);
+    public PersonDTO update(Integer id, PersonUpdateDTO data) {
+        Person entity = repo.findById(id).orElseThrow(() -> new RuntimeException("Person not found!"));
+        mapper.updateEntityFromDTO(data, entity);
+        return mapper.toDTO(repo.save(entity));
     }
     
-    @SuppressWarnings("null")
-    public void delete(Integer id) { repo.delete(findById(id)); }    
+    public void delete(Integer id) { repo.deleteById(id); }    
 }

@@ -4,8 +4,13 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.hrs.backend.DTOs.EducBackground.EducBackgroundCreateDTO;
+import com.hrs.backend.DTOs.EducBackground.EducBackgroundDTO;
+import com.hrs.backend.DTOs.EducBackground.EducBackgroundUpdateDTO;
+import com.hrs.backend.Mappers.Education.EducBackgroundMapper;
 import com.hrs.backend.Models.EducBackground.EducBackground;
 import com.hrs.backend.Repos.EBRepo;
+import com.hrs.backend.Repos.PersonRepo;
 
 import lombok.RequiredArgsConstructor;
 
@@ -13,25 +18,30 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class EBService {
     private final EBRepo repo;
+    private final EducBackgroundMapper mapper;
+    private final PersonRepo personRepo;
 
-    public List<EducBackground> findAll() { return repo.findAll(); }
-
-    public EducBackground findById(Integer id) {
-        if (id == null) throw new RuntimeException("Id cannot be null!");
-        return repo.findById(id).orElseThrow(() -> new RuntimeException("Citizenship not found!")); 
+    public List<EducBackgroundDTO> getAll() {
+        return repo.findAll().stream().map(mapper::toDTO).toList();
     }
 
-    public EducBackground create(EducBackground data) { 
-        if (data == null) throw new RuntimeException("Data cannot be null!");
-        return repo.save(data); 
+    public EducBackgroundDTO get(Integer id) {
+        EducBackground entity = repo.findById(id).orElseThrow(() -> new RuntimeException("EducBackground not found"));
+        return mapper.toDTO(entity);
     }
 
-    public EducBackground update(Integer id, EducBackground data) {
-        EducBackground existing = findById(id);
-        data.setId(existing.getId());
-        return repo.save(data);
+    public EducBackgroundDTO create(EducBackgroundCreateDTO dto) {
+        personRepo.findById(dto.getPersonId()).orElseThrow(() -> new RuntimeException("Invalid Person ID"));
+        EducBackground entity = mapper.toEntity(dto);
+        return mapper.toDTO(repo.save(entity));
+    }
+
+    public EducBackgroundDTO update(Integer id, EducBackgroundUpdateDTO dto) {
+        EducBackground entity = repo.findById(id).orElseThrow(() -> new RuntimeException("EducBackground not found"));
+        if (dto.getPersonId() != null) personRepo.findById(dto.getPersonId()).orElseThrow(() -> new RuntimeException("Invalid Person ID"));
+        mapper.updateEntityFromDTO(dto, entity);
+        return mapper.toDTO(repo.save(entity));
     }
     
-    @SuppressWarnings("null")
-    public void delete(Integer id) { repo.delete(findById(id)); }    
+    public void delete(Integer id) { repo.deleteById(id); }    
 }
