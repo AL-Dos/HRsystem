@@ -23,5 +23,4 @@ public class SupabaseConfig {
 				.defaultHeader("apikey", supabaseKey)
 				.build();
 	}
-
 }
