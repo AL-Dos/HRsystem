@@ -16,9 +16,11 @@ public interface PersonMapper {
     PersonDTO toDTO(Person entity);
     
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "referenceNumber", ignore = true)
     Person toEntity(PersonCreateDTO dto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "referenceNumber", ignore = true)
     void updateEntityFromDTO(PersonUpdateDTO dto, @MappingTarget Person entity);
 }

@@ -5,6 +5,5 @@ import lombok.Data;
 @Data
 public class PersonUpdateDTO {
     private String photoUrl;
-    private String referenceNumber;
     private String signature;
 }

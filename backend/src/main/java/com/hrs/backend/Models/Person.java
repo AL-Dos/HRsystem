@@ -18,7 +18,7 @@ public class Person {
     @Column(name = "photo_url")
     private String photoUrl;
 
-    @Column(name = "reference_number")
+    @Column(name = "reference_number", updatable = false)
     private String referenceNumber;
 
     @Column(name = "signature")

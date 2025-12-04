@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 public class PersonService {
     private final PersonRepo repo;
     private final PersonMapper mapper;
+    private final RefNumService service;
 
     public List<PersonDTO> getAll() { return repo.findAll().stream().map(mapper::toDTO).toList(); }
 
@@ -28,6 +29,7 @@ public class PersonService {
 
     public PersonDTO create(PersonCreateDTO dto) { 
         Person entity = mapper.toEntity(dto);
+        entity.setReferenceNumber(service.generateRefNum()); // Auto-gen ref num
         return mapper.toDTO(repo.save(entity)); 
     }
 
