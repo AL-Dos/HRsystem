@@ -17,9 +17,11 @@ public interface EducBackgroundMapper {
     EducBackgroundDTO toDTO(EducBackground entity);
 
     @Mapping(source = "personId", target = "person.id")
+    @Mapping(target = "id", ignore = true)
     EducBackground toEntity(EducBackgroundCreateDTO dto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(source = "personId", target = "person.id")
+    @Mapping(target = "id", ignore = true)
     void updateEntityFromDTO(EducBackgroundUpdateDTO dto, @MappingTarget EducBackground entity);
 }

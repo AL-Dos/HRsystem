@@ -16,9 +16,11 @@ public interface FamBackgroundMapper {
     FamilyBackgroundDTO toDTO(FamilyBackground entity);
 
     @Mapping(source = "personId", target = "person.id")
+    @Mapping(target = "id", ignore = true)
     FamilyBackground toEntity(FamilyBackgroundCreateDTO dto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(source = "personId", target = "person.id")
+    @Mapping(target = "id", ignore = true)
     void updateEntityFromDTO(FamilyBackgroundUpdateDTO dto, @MappingTarget FamilyBackground entity);
 }

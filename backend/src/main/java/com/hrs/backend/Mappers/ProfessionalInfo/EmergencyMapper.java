@@ -20,9 +20,11 @@ public interface EmergencyMapper {
     List<EmergencyDTO> toDTOList(List<EmergencyInfo> entities);
 
     @Mapping(source = "personId", target = "person.id")
+    @Mapping(target = "id", ignore = true)
     EmergencyInfo toEntity(EmergencyCreateDTO dto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(source = "personId", target = "person.id")
+    @Mapping(target = "id", ignore = true)
     void updateEntityFromDTO(EmergencyUpdateDTO dto, @MappingTarget EmergencyInfo entity);
 }

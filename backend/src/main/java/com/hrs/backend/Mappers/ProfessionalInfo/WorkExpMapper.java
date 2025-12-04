@@ -20,9 +20,11 @@ public interface WorkExpMapper {
     List<WorkExpDTO> toDTOList(List<WorkExperience> entities);
 
     @Mapping(source = "personId", target = "person.id")
+    @Mapping(target = "id", ignore = true)
     WorkExperience toEntity(WorkExpCreateDTO dto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(source = "personId", target = "person.id")
+    @Mapping(target = "id", ignore = true)
     void updateEntityFromDTO(WorkExpUpdateDTO dto, @MappingTarget WorkExperience entity);
 }

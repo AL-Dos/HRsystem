@@ -19,9 +19,11 @@ public interface ChildMapper {
     List<ChildDTO> toDTOList(List<Child> entities);
 
     @Mapping(source = "familyBackgroundId", target = "familyBackground.id")
+    @Mapping(target = "id", ignore = true)
     Child toEntity(ChildCreateDTO dto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(source = "familyBackgroundId", target = "familyBackground.id")
+    @Mapping(target = "id", ignore = true)
     void updateEntityFromDTO(ChildUpdateDTO dto, @MappingTarget Child entity);
 }

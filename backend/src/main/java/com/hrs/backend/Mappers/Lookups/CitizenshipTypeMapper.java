@@ -2,6 +2,7 @@ package com.hrs.backend.Mappers.Lookups;
 
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
@@ -14,8 +15,10 @@ import com.hrs.backend.Models.PersonalInfo.CitizenshipType;
 public interface CitizenshipTypeMapper {
     CitizenshipTypeDTO toDTO(CitizenshipType entity);
 
+    @Mapping(target = "id", ignore = true)
     CitizenshipType toEntity(CitizenshipTypeCreateDTO dto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "id", ignore = true)
     void updateEntityFromDTO(CitizenshipTypeUpdateDTO dto, @MappingTarget CitizenshipType entity);
 }

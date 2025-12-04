@@ -30,6 +30,7 @@ public interface PersonalInfoMapper {
     @Mapping(source = "citizenshipTypeId", target = "citizenshipType.id")
     @Mapping(source = "citizenStatusId", target = "citizenStatus.id")
     @Mapping(source = "personId", target = "person.id")
+    @Mapping(target = "id", ignore = true)
     PersonalInfo toEntity(PersonalInfoCreateDTO dto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -38,5 +39,6 @@ public interface PersonalInfoMapper {
     @Mapping(source = "citizenshipTypeId", target = "citizenshipType.id")
     @Mapping(source = "citizenStatusId", target = "citizenStatus.id")
     @Mapping(source = "personId", target = "person.id")
+    @Mapping(target = "id", ignore = true)
     void updateEntityFromDTO(PersonalInfoUpdateDTO dto, @MappingTarget PersonalInfo entity);
 }

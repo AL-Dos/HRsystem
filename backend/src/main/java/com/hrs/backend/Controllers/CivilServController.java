@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hrs.backend.DTOs.CivilService.CivilServiceCreateDTO;
 import com.hrs.backend.DTOs.CivilService.CivilServiceDTO;
 import com.hrs.backend.DTOs.CivilService.CivilServiceUpdateDTO;
+import com.hrs.backend.Services.CivilServService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/civil-service")
 @RequiredArgsConstructor
 public class CivilServController {
-    private final CivilServController service;
+    private final CivilServService service;
 
     @PostMapping
     public CivilServiceDTO create(@RequestBody CivilServiceCreateDTO dto) {

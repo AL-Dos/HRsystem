@@ -20,9 +20,11 @@ public interface TrainDevMapper {
     List<TrainDevDTO> toDTOList(List<TrainingDevelopment> entities);
 
     @Mapping(source = "personId", target = "person.id")
+    @Mapping(target = "id", ignore = true)
     TrainingDevelopment toEntity(TrainDevCreateDTO dto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(source = "personId", target = "person.id")
+    @Mapping(target = "id", ignore = true)
     void updateEntityFromDTO(TrainDevUpdateDTO dto, @MappingTarget TrainingDevelopment entity);
 }

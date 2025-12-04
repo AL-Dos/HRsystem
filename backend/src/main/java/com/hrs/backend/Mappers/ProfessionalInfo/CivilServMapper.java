@@ -20,9 +20,11 @@ public interface CivilServMapper {
     List<CivilServiceDTO> toDTOList(List<CivilService> entities);
 
     @Mapping(source = "personId", target = "person.id")
+    @Mapping(target = "id", ignore = true)
     CivilService toEntity(CivilServiceCreateDTO dto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(source = "personId", target = "person.id")
+    @Mapping(target = "id", ignore = true)
     void updateEntityFromDTO(CivilServiceUpdateDTO dto, @MappingTarget CivilService entity);
 }

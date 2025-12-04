@@ -21,10 +21,12 @@ public interface EducEntryMapper {
 
     @Mapping(source = "educBackgroundId", target = "educBackground.id")
     @Mapping(source = "levelId", target = "educationLevel.id")
+    @Mapping(target = "id", ignore = true)
     EducationEntry toEntity(EducationEntryCreateDTO dto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(source = "educBackgroundId", target = "educBackground.id")
     @Mapping(source = "levelId", target = "educationLevel.id")
+    @Mapping(target = "id", ignore = true)
     void updateEntityFromDTO(EducationEntryUpdateDTO dto, @MappingTarget EducationEntry entity);
 }
