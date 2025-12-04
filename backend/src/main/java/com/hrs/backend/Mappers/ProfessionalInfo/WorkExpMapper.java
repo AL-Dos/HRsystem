@@ -1,5 +1,7 @@
 package com.hrs.backend.Mappers.ProfessionalInfo;
 
+import java.util.List;
+
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,6 +17,7 @@ import com.hrs.backend.Models.WorkExperience;
 @Mapper(componentModel = "spring", uses = { PersonMapper.class })
 public interface WorkExpMapper {
     WorkExpDTO toDTO(WorkExperience entity);
+    List<WorkExpDTO> toDTOList(List<WorkExperience> entities);
 
     @Mapping(source = "personId", target = "person.id")
     WorkExperience toEntity(WorkExpCreateDTO dto);

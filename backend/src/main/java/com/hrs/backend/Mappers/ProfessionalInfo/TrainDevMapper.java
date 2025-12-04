@@ -1,5 +1,7 @@
 package com.hrs.backend.Mappers.ProfessionalInfo;
 
+import java.util.List;
+
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,6 +17,7 @@ import com.hrs.backend.Models.TrainingDevelopment;
 @Mapper(componentModel = "spring", uses = { PersonMapper.class })
 public interface TrainDevMapper {
     TrainDevDTO toDTO(TrainingDevelopment entity);
+    List<TrainDevDTO> toDTOList(List<TrainingDevelopment> entities);
 
     @Mapping(source = "personId", target = "person.id")
     TrainingDevelopment toEntity(TrainDevCreateDTO dto);

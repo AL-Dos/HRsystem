@@ -1,5 +1,7 @@
 package com.hrs.backend.Mappers.Education;
 
+import java.util.List;
+
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,6 +17,7 @@ import com.hrs.backend.Models.EducBackground.EducationEntry;
 @Mapper(componentModel = "spring", uses = { EducBackgroundMapper.class, EducationLevelMapper.class })
 public interface EducEntryMapper {
     EducationEntryDTO toDTO(EducationEntry entity);
+    List<EducationEntryDTO> toDTOList(List<EducationEntry> entities);
 
     @Mapping(source = "educBackgroundId", target = "educBackground.id")
     @Mapping(source = "levelId", target = "educationLevel.id")

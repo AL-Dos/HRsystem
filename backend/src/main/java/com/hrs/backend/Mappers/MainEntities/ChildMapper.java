@@ -1,5 +1,7 @@
 package com.hrs.backend.Mappers.MainEntities;
 
+import java.util.List;
+
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -14,6 +16,7 @@ import com.hrs.backend.Models.FamilyBackground.Child;
 @Mapper(componentModel = "spring", uses = { FamBackgroundMapper.class })
 public interface ChildMapper {
     ChildDTO toDTO(Child entity);
+    List<ChildDTO> toDTOList(List<Child> entities);
 
     @Mapping(source = "familyBackgroundId", target = "familyBackground.id")
     Child toEntity(ChildCreateDTO dto);

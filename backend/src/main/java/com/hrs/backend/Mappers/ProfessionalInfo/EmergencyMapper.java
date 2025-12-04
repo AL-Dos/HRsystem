@@ -1,5 +1,7 @@
 package com.hrs.backend.Mappers.ProfessionalInfo;
 
+import java.util.List;
+
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,6 +17,7 @@ import com.hrs.backend.Models.EmergencyInfo;
 @Mapper(componentModel = "spring", uses = { PersonMapper.class })
 public interface EmergencyMapper {
     EmergencyDTO toDTO(EmergencyInfo entity);
+    List<EmergencyDTO> toDTOList(List<EmergencyInfo> entities);
 
     @Mapping(source = "personId", target = "person.id")
     EmergencyInfo toEntity(EmergencyCreateDTO dto);
