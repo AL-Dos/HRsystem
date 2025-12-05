@@ -36,15 +36,15 @@ public class PersonController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public PersonDTO create(
             @RequestPart("dto") PersonCreateDTO dto,
-            @RequestPart(value = "photo", required = false) MultipartFile photo,
-            @RequestPart(value = "signature", required = false) MultipartFile signature
+            @RequestPart(value = "person-photos", required = false) MultipartFile photo,
+            @RequestPart(value = "person-signatures", required = false) MultipartFile signature
     ) throws IOException {
         if (photo != null && !photo.isEmpty()) {
-            String photoUrl = supabaseService.uploadFile(photo);
+            String photoUrl = supabaseService.uploadPhoto(photo);
             dto.setPhotoUrl(photoUrl);
         }
         if (signature != null && !signature.isEmpty()) {
-            String sigUrl = supabaseService.uploadFile(signature);
+            String sigUrl = supabaseService.uploadSignature(signature);
             dto.setSignature(sigUrl);
         }
         return service.create(dto);
@@ -70,8 +70,8 @@ public class PersonController {
     public PersonDTO update(
             @PathVariable Integer id,
             @RequestPart("dto") PersonUpdateDTO dto,
-            @RequestPart(value = "photo", required = false) MultipartFile photo,
-            @RequestPart(value = "signature", required = false) MultipartFile signature
+            @RequestPart(value = "person-photos", required = false) MultipartFile photo,
+            @RequestPart(value = "person-signatures", required = false) MultipartFile signature
     ) throws IOException {
         // Get existing person to retrieve old file URLs for cleanup
         PersonDTO existing = service.get(id);
@@ -81,7 +81,7 @@ public class PersonController {
             if (existing.getPhotoUrl() != null && !existing.getPhotoUrl().isEmpty()) {
                 deleteSupabaseFile(existing.getPhotoUrl());
             }
-            String photoUrl = supabaseService.uploadFile(photo);
+            String photoUrl = supabaseService.uploadPhoto(photo);
             dto.setPhotoUrl(photoUrl);
         }
         if (signature != null && !signature.isEmpty()) {
@@ -89,7 +89,7 @@ public class PersonController {
             if (existing.getSignature() != null && !existing.getSignature().isEmpty()) {
                 deleteSupabaseFile(existing.getSignature());
             }
-            String sigUrl = supabaseService.uploadFile(signature);
+            String sigUrl = supabaseService.uploadSignature(signature);
             dto.setSignature(sigUrl);
         }
         return service.update(id, dto);
@@ -113,7 +113,6 @@ public class PersonController {
         }
         service.delete(id);
     }
-
   
     // Helper method to extract file path from Supabase URL and delete it.
     private void deleteSupabaseFile(String fileUrl) {
@@ -133,5 +132,10 @@ public class PersonController {
             // Log error but don't fail the operation
             System.err.println("Failed to delete file from Supabase: " + fileUrl + ", error: " + e.getMessage());
         }
+    }
+
+    @PostMapping(value = "/upload-test", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+        public String testUpload(@RequestPart("file") MultipartFile file) throws IOException {
+        return supabaseService.uploadPhoto(file);
     }
 }
