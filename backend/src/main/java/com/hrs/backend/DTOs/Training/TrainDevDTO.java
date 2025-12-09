@@ -11,7 +11,7 @@ public class TrainDevDTO {
     private Integer id;
     private String title;
     private LocalDate attendFrom;
-    private LocalDate attenTo;
+    private LocalDate attendTo;
     private Integer hours;
     private String typeOf;
     private String sponsoredBy;

@@ -1,250 +1,98 @@
 package com.hrs.backend.Services;
 
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
-import java.time.Duration;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.net.URI;
 import java.util.UUID;
 
-@Slf4j
 @Service
+@Slf4j
 public class SupabaseService {
-
-    private final WebClient projectClient;
     private final WebClient storageClient;
-    private final String baseUrl;
 
-    // default upload timeout (adjust if needed)
-    private final Duration REQUEST_TIMEOUT = Duration.ofSeconds(30);
+    private final String supabaseUrl;
+    private final String photosBucket;
+    private final String signaturesBucket;
 
-    @Value("${supabase.bucket.person-photos:person-photos}")
-    private String defaultPhotosBucket;
-
-    @Value("${supabase.bucket.person-signatures:person-signatures}")
-    private String defaultSignaturesBucket;
-
-    @Value("${supabase.url}")
-    private String supabaseUrl;
-
-    public SupabaseService(WebClient supabaseProjectWebClient, WebClient supabaseStorageWebClient) {
-        this.projectClient = supabaseProjectWebClient;
-        this.storageClient = supabaseStorageWebClient;
-        this.baseUrl = supabaseUrl;
+    public SupabaseService(
+            @Qualifier("supabaseStorageClient") WebClient storageClient,
+            @Value("${supabase.url}") String supabaseUrl,
+            @Value("${supabase.bucket.person-photos}") String photosBucket,
+            @Value("${supabase.bucket.person-signatures}") String signaturesBucket
+    ) {
+        this.storageClient = storageClient;
+        this.supabaseUrl = supabaseUrl;  // now guaranteed non-null
+        this.photosBucket = photosBucket;
+        this.signaturesBucket = signaturesBucket;
     }
 
-    /* -------------------- Project-level helpers -------------------- */
-
-    /**
-     * Ping project root to verify connectivity to the project domain.
-     * NOTE: storage root (storage/v1) returns 404 for '/', so use project client.
-     */
-    public String pingProject() {
-        try {
-            String body = projectClient.get()
-                    .uri("/")
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block(REQUEST_TIMEOUT);
-            log.debug("Supabase project ping response: {}", body);
-            return Optional.ofNullable(body).orElse("");
-        } catch (Exception ex) {
-            log.error("Supabase project ping failed: {}", ex.getMessage(), ex);
-            throw new RuntimeException("Supabase project ping failed: " + ex.getMessage(), ex);
-        }
-    }
-
-    /**
-     * Attempt to list buckets. Implementation tries endpoints that exist in various Supabase versions.
-     * Returns raw JSON string (you can parse as needed).
-     */
-    public String listBuckets() {
-        // try modern '/bucket' endpoint first
-        try {
-            String resp = storageClient.get()
-                    .uri("/bucket")
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block(REQUEST_TIMEOUT);
-            return resp;
-        } catch (Exception e1) {
-            log.debug("GET /bucket failed: {}", e1.getMessage());
-            // fallback to '/buckets'
-            try {
-                String resp2 = storageClient.get()
-                        .uri("/buckets")
-                        .retrieve()
-                        .bodyToMono(String.class)
-                        .block(REQUEST_TIMEOUT);
-                return resp2;
-            } catch (Exception e2) {
-                log.error("Failed to list buckets (both /bucket and /buckets): {}, {}", e1.getMessage(), e2.getMessage());
-                throw new RuntimeException("Failed to list Supabase buckets: " + e2.getMessage(), e2);
-            }
-        }
-    }
-
-    /* -------------------- Storage API: upload / delete / signed URL -------------------- */
-
-    /**
-     * Uploads a MultipartFile to the default photos bucket and returns the public URL.
-     * If bucket is private, use createSignedUrl after upload to provide temporary access.
-     */
     public String uploadPhoto(MultipartFile file) throws IOException {
-        return uploadFile(file, defaultPhotosBucket, null);
+        return uploadFile(file, photosBucket);
     }
 
     public String uploadSignature(MultipartFile file) throws IOException {
-        return uploadFile(file, defaultSignaturesBucket, null);
+        return uploadFile(file, signaturesBucket);
     }
 
-    /**
-     * Upload file to a bucket. If 'path' is null, an autogenerated name will be used.
-     * Returns the public URL (conventional public URL). If your bucket is private, call createSignedUrl() afterwards.
-     */
-    public String uploadFile(MultipartFile file, String bucket, String path) throws IOException {
-        Objects.requireNonNull(file, "file must not be null");
-        if (!StringUtils.hasText(bucket)) throw new IllegalArgumentException("bucket must not be null/empty");
+    public String uploadFile(MultipartFile file, String bucket) throws IOException {
+        String filename = UUID.randomUUID() + "_" + sanitize(file.getOriginalFilename());
 
-        String filename = (path == null || path.isBlank())
-                ? (UUID.randomUUID() + "_" + sanitizeFilename(Objects.requireNonNull(file.getOriginalFilename())))
-                : path;
-
-        byte[] bytes = file.getBytes();
-
-        // POST /object/{bucket}/{path}? upsert=true
-        // some community examples use POST (works), others use PUT — POST is widely used successfully.
+        // Supabase REST requires this exact path
         String uri = "/object/" + bucket + "/" + filename + "?upsert=true";
+        String contentType = file.getContentType() != null ? file.getContentType() : "application/octet-stream";
 
-        log.debug("Uploading to Supabase storage: uri={}, contentType={}", uri, file.getContentType());
-
-        ClientResponse clientResp = storageClient.post()
+        @SuppressWarnings("null")
+        ClientResponse resp = storageClient.post()
                 .uri(uri)
-                .contentType(MediaType.parseMediaType(Optional.ofNullable(file.getContentType()).orElse(MediaType.APPLICATION_OCTET_STREAM_VALUE)))
-                .bodyValue(bytes)
+                .contentType(MediaType.parseMediaType(contentType))
+                .bodyValue(file.getBytes())
                 .exchangeToMono(Mono::just)
-                .block(REQUEST_TIMEOUT);
+                .block();
 
-        int status = clientResp.statusCode().value();
-        String respBody = clientResp.bodyToMono(String.class).block(REQUEST_TIMEOUT);
+        String body = resp.bodyToMono(String.class).block();
 
-        if (status >= 200 && status < 300) {
-            // Return conventional public URL (works for public buckets)
-            String publicUrl = getPublicUrl(bucket, filename);
-            log.info("Uploaded file to supabase: {} (status {})", publicUrl, status);
-            return publicUrl;
-        } else {
-            log.error("Failed to upload to supabase. status={}, body={}", status, respBody);
-            throw new RuntimeException("Failed to upload file to Supabase. status=" + status + ", body=" + respBody);
-        }
+        if (!resp.statusCode().is2xxSuccessful())
+            throw new RuntimeException("Upload failed: " + body);
+
+        return supabaseUrl + "/storage/v1/object/public/" + bucket + "/" + filename;
     }
 
-    /**
-     * Delete single file from bucket
-     * Uses DELETE /object/{bucket}/{path}
-     */
     public void deleteFile(String bucket, String path) {
-        if (!StringUtils.hasText(bucket) || !StringUtils.hasText(path)) {
-            throw new IllegalArgumentException("bucket and path are required");
-        }
-
         String uri = "/object/" + bucket + "/" + path;
-        log.debug("Deleting object from supabase: {}", uri);
 
         try {
             storageClient.delete()
                     .uri(uri)
                     .retrieve()
                     .bodyToMono(String.class)
-                    .block(REQUEST_TIMEOUT);
-            log.info("Deleted {} / {}", bucket, path);
-        } catch (Exception ex) {
-            log.error("Failed to delete file {} from bucket {}: {}", path, bucket, ex.getMessage(), ex);
-            // surface an error but don't crash the app; caller may choose to ignore
-            throw new RuntimeException("Failed to delete file from Supabase: " + ex.getMessage(), ex);
+                    .block();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to delete file: " + e.getMessage());
         }
     }
 
-    /**
-     * Delete multiple files in a bucket using the 'delete' endpoint payload.
-     * Some Supabase versions support POST /object/{bucket}/delete with body {"paths":["a","b"]} or {"prefixes": [...]}
-     */
-    public void deleteFilesBulk(String bucket, String... paths) {
-        if (!StringUtils.hasText(bucket)) throw new IllegalArgumentException("bucket required");
+    // WHY: Supabase URLs are predictable and safe to parse this way
+    public void deleteFromPublicUrl(String publicUrl) {
+        URI uri = URI.create(publicUrl);
+        String[] parts = uri.getPath().split("/object/public/");
+        if (parts.length != 2) return;
 
-        Map<String, Object> body = Map.of("paths", paths);
-
-        try {
-            storageClient.post()
-                    .uri("/object/" + bucket + "/delete")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(body)
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block(REQUEST_TIMEOUT);
-            log.info("Requested bulk delete for {} paths in bucket {}", paths.length, bucket);
-        } catch (Exception ex) {
-            log.error("Bulk delete failed: {}", ex.getMessage(), ex);
-            throw new RuntimeException("Bulk delete failed: " + ex.getMessage(), ex);
-        }
+        String[] key = parts[1].split("/", 2);
+        deleteFile(key[0], key[1]);
     }
 
-    /**
-     * Create a signed GET URL for a file (returns a signed URL that can be used by clients for direct GET).
-     * Uses POST /object/sign/{bucket} with body { "path": "<path>", "expires_in": <seconds> } (some Supabase versions).
-     * If that fails, we throw the underlying error for inspection.
-     */
-    public String createSignedUrl(String bucket, String path, int expiresInSeconds) {
-        if (!StringUtils.hasText(bucket) || !StringUtils.hasText(path)) {
-            throw new IllegalArgumentException("bucket & path required");
-        }
-
-        Map<String, Object> body = Map.of(
-                "path", path,
-                "expires_in", expiresInSeconds
-        );
-
-        try {
-            // endpoint: POST /object/sign/{bucket}
-            String resp = storageClient.post()
-                    .uri("/object/sign/" + bucket)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(body)
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block(REQUEST_TIMEOUT);
-
-            log.debug("createSignedUrl response: {}", resp);
-            // resp is JSON like { "signedURL": "https://..." } — caller can parse if needed
-            return resp;
-        } catch (Exception ex) {
-            log.error("createSignedUrl failed: {}", ex.getMessage(), ex);
-            throw new RuntimeException("createSignedUrl failed: " + ex.getMessage(), ex);
-        }
-    }
-
-    /**
-     * Conventional public URL for public buckets (no signed URL).
-     */
-    public String getPublicUrl(String bucket, String path) {
-        if (!StringUtils.hasText(bucket) || !StringUtils.hasText(path)) 
-            throw new IllegalArgumentException("bucket+path required");
-        
-        return baseUrl + "/storage/v1/object/public/" + bucket + "/" + path;
-    }
-
-    private String sanitizeFilename(String original) {
-        if (original == null) return UUID.randomUUID().toString();
-        return original.replaceAll("[^a-zA-Z0-9_.-]", "_");
+    private String sanitize(String name) {
+        if (name == null) return UUID.randomUUID().toString();
+        return name.replaceAll("[^a-zA-Z0-9_.-]", "_");
     }
 }
