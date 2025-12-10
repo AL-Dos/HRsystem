@@ -1,4 +1,4 @@
-package com.hrs.backend.Pdf.Employment;
+package com.hrs.backend.Pdf.ServiceRendered;
 
 import java.io.ByteArrayOutputStream;
 
@@ -17,7 +17,7 @@ import com.hrs.backend.Pdf.PdfUtil.RefNumber;
 import com.hrs.backend.Pdf.PdfUtil.TopText;
 import com.hrs.backend.Services.DateFormatService;
 
-public class EmpCertPdfBuilder {
+public class CertServicePdfBuilder {
     private final RefNumber ref = new RefNumber();
     private final TopText top = new TopText();
     private final BottomText bot = new BottomText();

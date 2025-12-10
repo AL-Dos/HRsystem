@@ -12,7 +12,7 @@ import org.openpdf.text.pdf.PdfPTable;
 
 import com.hrs.backend.Services.DateFormatService;
 
-public class BottomText {
+public class ServiceBotText {
     public void buildTop(Document doc, String name, DateFormatService service) throws DocumentException {
         PdfPTable area = new PdfPTable(1);
         area.setWidthPercentage(100);
@@ -22,7 +22,7 @@ public class BottomText {
         Font smallFont = Fonts.getSigFont();
 
         Paragraph signHere = new Paragraph();
-        signHere.add(new Chunk("This certification is issued upon the request of Mx." + name + " for employment and filing purposes", smallFont));
+        signHere.add(new Chunk("This certification is issued upon the request of Mx." + name + " for employment purposes", smallFont));
         signHere.add(new Chunk("\n\nDone this " + date + " at the City of Tagum, Davao del Norte, Philippines", smallFont));
         signHere.add(new Chunk("\n\n\n\nMICHELLE O. MANINGO\n", boldFont));
         signHere.add(new Chunk("(Supervising Statistical Specialist)\n", smallFont));
