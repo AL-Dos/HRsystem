@@ -57,4 +57,8 @@ public class PersonalInfoService {
     }
 
     public void delete(Integer id) { repo.deleteById(id); }    
+
+    public PersonalInfo getByPersonId(Long personId) {
+        return repo.findByPersonId(personId.intValue()).orElseThrow(() -> new RuntimeException("Personal Info not found for personId=" + personId));
+    }
 }

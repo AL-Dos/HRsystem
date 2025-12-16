@@ -1,6 +1,7 @@
 package com.hrs.backend.Pdf.ServiceRendered;
 
 import java.io.ByteArrayOutputStream;
+import java.util.List;
 
 import org.openpdf.text.Document;
 import org.openpdf.text.Element;
@@ -10,6 +11,7 @@ import org.openpdf.text.PageSize;
 import org.openpdf.text.Paragraph;
 import org.openpdf.text.pdf.PdfWriter;
 
+import com.hrs.backend.DTOs.ServiceRow;
 import com.hrs.backend.Models.PersonalInfo.PersonalInfo;
 import com.hrs.backend.Pdf.PdfUtil.BottomText;
 import com.hrs.backend.Pdf.PdfUtil.HeaderFooter;
@@ -21,8 +23,9 @@ public class CertServicePdfBuilder {
     private final RefNumber ref = new RefNumber();
     private final TopText top = new TopText();
     private final BottomText bot = new BottomText();
+    private final TableBuilder bd = new TableBuilder();
 
-    public byte[] build(PersonalInfo info, DateFormatService dateService) throws Exception {
+    public byte[] build(PersonalInfo info, DateFormatService dateService, List<ServiceRow> rows) throws Exception {
         Document doc = new Document(PageSize.LETTER, 50, 50, 90, 70);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
@@ -42,7 +45,10 @@ public class CertServicePdfBuilder {
         // 2. TOP TEXT
         top.buildSignature(doc, info);
 
-        // 3. BOTTOM TEXT
+        // 3. Table
+        bd.build(doc, rows);
+
+        // 4. BOTTOM TEXT
         bot.buildTop(doc, info.getFirstName() + " " + info.getSurname(), dateService);
 
         doc.close();
