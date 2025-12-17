@@ -10,6 +10,7 @@ import org.openpdf.text.FontFactory;
 import org.openpdf.text.PageSize;
 import org.openpdf.text.Paragraph;
 import org.openpdf.text.pdf.PdfWriter;
+import org.springframework.stereotype.Component;
 
 import com.hrs.backend.DTOs.ServiceRow;
 import com.hrs.backend.Models.PersonalInfo.PersonalInfo;
@@ -19,6 +20,7 @@ import com.hrs.backend.Pdf.PdfUtil.RefNumber;
 import com.hrs.backend.Pdf.PdfUtil.TopText;
 import com.hrs.backend.Services.DateFormatService;
 
+@Component
 public class CertServicePdfBuilder {
     private final RefNumber ref = new RefNumber();
     private final TopText top = new TopText();
