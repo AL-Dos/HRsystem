@@ -23,4 +23,16 @@ public class Person {
 
     @Column(name = "signature")
     private String signature;
+
+    @Column(name = "type")
+    private String type;
+    @Column(name = "position")
+    private String position;
+
+    @ManyToOne
+    @JoinColumn(name = "status_id")
+    private Status status;
+
+    @Column(name = "name")
+    private String name;
 }

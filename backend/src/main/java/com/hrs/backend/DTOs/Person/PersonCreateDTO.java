@@ -6,4 +6,8 @@ import lombok.Data;
 public class PersonCreateDTO {
     private String photoUrl;
     private String signature;
+    private String type;
+    private String position;
+    private Integer statusId;
+    private String name;
 }
