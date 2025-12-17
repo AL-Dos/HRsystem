@@ -9,7 +9,9 @@ import com.hrs.backend.DTOs.Person.PersonDTO;
 import com.hrs.backend.DTOs.Person.PersonUpdateDTO;
 import com.hrs.backend.Mappers.MainEntities.PersonMapper;
 import com.hrs.backend.Models.Person;
+import com.hrs.backend.Models.Status;
 import com.hrs.backend.Repos.PersonRepo;
+import com.hrs.backend.Repos.StatusRepo;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,6 +21,7 @@ public class PersonService {
     private final PersonRepo repo;
     private final PersonMapper mapper;
     private final RefNumService service;
+    private final StatusRepo statusRepo;
 
     public List<PersonDTO> getAll() { return repo.findAll().stream().map(mapper::toDTO).toList(); }
 
@@ -29,7 +32,12 @@ public class PersonService {
 
     public PersonDTO create(PersonCreateDTO dto) { 
         Person entity = mapper.toEntity(dto);
-        entity.setReferenceNumber(service.generateRefNum()); // Auto-gen ref num
+        entity.setReferenceNumber(service.generateRefNum());
+
+        if (dto.getStatusId() != null) {
+            Status status = statusRepo.findById(dto.getStatusId()).orElseThrow(() -> new RuntimeException("Status not found"));
+            entity.setStatus(status);
+        }
         return mapper.toDTO(repo.save(entity)); 
     }
 

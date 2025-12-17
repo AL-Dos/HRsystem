@@ -10,6 +10,7 @@ import com.hrs.backend.DTOs.Person.PersonCreateDTO;
 import com.hrs.backend.DTOs.Person.PersonDTO;
 import com.hrs.backend.DTOs.Person.PersonUpdateDTO;
 import com.hrs.backend.Models.Person;
+import com.hrs.backend.Models.Status;
 
 @Mapper(componentModel = "spring")
 public interface PersonMapper {
@@ -17,10 +18,21 @@ public interface PersonMapper {
     
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "referenceNumber", ignore = true)
+    @Mapping(target = "status", source = "statusId")
     Person toEntity(PersonCreateDTO dto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "referenceNumber", ignore = true)
+    @Mapping(target = "status", source = "statusId")
     void updateEntityFromDTO(PersonUpdateDTO dto, @MappingTarget Person entity);
+    
+    default Status map(Integer statusId) {
+        if (statusId == null) {
+            return null;
+        }
+        Status status = new Status();
+        status.setId(statusId);
+        return status;
+    }
 }
