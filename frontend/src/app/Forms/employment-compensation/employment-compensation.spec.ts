@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Cosw } from './cosw';
+import { EmploymentCompensation } from './employment-compensation';
 
-describe('Cosw', () => {
-  let component: Cosw;
-  let fixture: ComponentFixture<Cosw>;
+describe('EmploymentCompensation', () => {
+  let component: EmploymentCompensation;
+  let fixture: ComponentFixture<EmploymentCompensation>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Cosw]
+      imports: [EmploymentCompensation]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Cosw);
+    fixture = TestBed.createComponent(EmploymentCompensation);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
