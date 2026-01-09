@@ -1,3 +1,14 @@
 <app-header/>
 
+<div class="layout">
+  <app-sidebar
+    [isOpen]="sidebarOpen"
+    (toggle)="toggleSidebar()"
+  />
+
+  <main>
+    <router-outlet></router-outlet>
+  </main>
+</div>
+
 <app-footer/>
