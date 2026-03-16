@@ -15,11 +15,13 @@ import lombok.RequiredArgsConstructor;
 import java.io.IOException;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/persons")
@@ -27,6 +29,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class PersonController {
     private final PersonService service;
     private final SupabaseService supabase;
+
+    @GetMapping
+    public List<PersonDTO> getAll() {
+        return service.getAll();
+    }
 
 @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_OCTET_STREAM_VALUE})
     public PersonDTO create(

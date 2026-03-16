@@ -1,8 +1,3 @@
-.layout {
-  display: flex;
-}
-
-main {
-  flex: 1;
-  padding: 1rem;
+.app-shell {
+  padding-top: 80px;
 }

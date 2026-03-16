@@ -1,1 +1,100 @@
-<p>dashboard works!</p>
+<section class="dashboard">
+  <header class="dashboard__header">
+    <div>
+      <p class="dashboard__eyebrow">Human Resource Services</p>
+      <h1>Dashboard</h1>
+      <p>Track employee profiles, generate documents, and keep records current.</p>
+    </div>
+    <div class="dashboard__stats">
+      <article class="stat-card">
+        <p class="stat-card__label">Total Employees</p>
+        <h3>{{ people.length }}</h3>
+        <p class="stat-card__meta">From the person table</p>
+      </article>
+      <article class="stat-card">
+        <p class="stat-card__label">Active Modules</p>
+        <h3>4</h3>
+        <p class="stat-card__meta">PDS, Employees, PDFs</p>
+      </article>
+    </div>
+  </header>
+
+  <section class="dashboard__grid">
+    <article class="dashboard-card">
+      <h2>PDS Creation</h2>
+      <p>Create a new Personal Data Sheet record.</p>
+      <button type="button">Open PDS Creation</button>
+    </article>
+
+    <article class="dashboard-card">
+      <h2>Employee List</h2>
+      <p>View all employees with created PDS records.</p>
+      <button type="button">Open Employee List</button>
+    </article>
+
+    <article class="dashboard-card">
+      <h2>Services Rendered PDF</h2>
+      <p>Generate a Services Rendered PDF document.</p>
+      <button type="button">Create Services Rendered PDF</button>
+    </article>
+
+    <article class="dashboard-card">
+      <h2>COE and Compensation PDF</h2>
+      <p>Generate a Certificate of Employment and Compensation PDF.</p>
+      <button type="button">Create COE and Compensation PDF</button>
+    </article>
+  </section>
+
+  <section class="dashboard__table">
+    <div class="table__header">
+      <div>
+        <h2>Employee Directory</h2>
+        <p>Latest records pulled from the person table.</p>
+      </div>
+      <div class="table__actions">
+        <button type="button" class="primary">New Employee</button>
+        <button type="button" class="ghost">Export List</button>
+      </div>
+    </div>
+
+    <div class="table__state" *ngIf="loading">Loading employee records...</div>
+    <div class="table__state error" *ngIf="!loading && errorMessage">{{ errorMessage }}</div>
+    <div class="table__state" *ngIf="!loading && !errorMessage && people.length === 0">
+      No employees found yet. Create a PDS to add the first record.
+    </div>
+
+    <div class="table__wrapper" *ngIf="!loading && !errorMessage && people.length > 0">
+      <table>
+        <thead>
+          <tr>
+            <th>Employee</th>
+            <th>Reference #</th>
+            <th>Type</th>
+            <th>Position</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let person of people">
+            <td class="employee__name">
+              <div class="employee__avatar">
+                <img *ngIf="person.photoUrl; else avatarInitials" [src]="person.photoUrl" alt="Employee photo">
+                <ng-template #avatarInitials>{{ getInitials(person.name) }}</ng-template>
+              </div>
+              <div>
+                <div class="employee__title">{{ person.name || 'Unnamed Employee' }}</div>
+                <div class="employee__meta">ID: {{ person.id }}</div>
+              </div>
+            </td>
+            <td>{{ person.referenceNumber || '—' }}</td>
+            <td>{{ person.type || '—' }}</td>
+            <td>{{ person.position || '—' }}</td>
+            <td>
+              <span class="status-pill">{{ person.status?.option || 'Unassigned' }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</section>

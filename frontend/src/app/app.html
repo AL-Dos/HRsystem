@@ -1,14 +1,5 @@
-<app-header/>
-
-<div class="layout">
-  <app-sidebar
-    [isOpen]="sidebarOpen"
-    (toggle)="toggleSidebar()"
-  />
-
-  <main>
-    <router-outlet></router-outlet>
-  </main>
-</div>
-
-<app-footer/>
+<app-header></app-header>
+<main class="app-shell">
+  <router-outlet></router-outlet>
+</main>
+<app-footer></app-footer>

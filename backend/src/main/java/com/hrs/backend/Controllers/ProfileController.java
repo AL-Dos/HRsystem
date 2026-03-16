@@ -20,7 +20,7 @@ public class ProfileController {
     private final PDSProfileService profileService;
 
     @GetMapping("/{id}")
-    public PDSFullDTO getFullProfile(@PathVariable Integer personId) throws NameNotFoundException {
+    public PDSFullDTO getFullProfile(@PathVariable("id") Integer personId) throws NameNotFoundException {
         return profileService.getFullProfile(personId);
     }
 }

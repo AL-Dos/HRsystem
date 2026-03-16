@@ -1,20 +1,16 @@
 import { Component, signal } from '@angular/core';
 import { Footer } from "./Components/footer/footer";
 import { Header } from "./Components/header/header";
-import { Sidebar } from "./Components/sidebar/sidebar";
-import { RouterOutlet } from "@angular/router";
+import { Router, RouterOutlet } from "@angular/router";
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
-  imports: [Footer, Header, Sidebar, RouterOutlet],
+  imports: [RouterOutlet, CommonModule, Header, Footer],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App {
   protected readonly title = signal('frontend');
-  sidebarOpen = true;
-
-  toggleSidebar(): void {
-    this.sidebarOpen = !this.sidebarOpen;
-  }
+  constructor(public router: Router) {}
 }
