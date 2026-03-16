@@ -1,35 +1,35 @@
 <section class="dashboard">
-  <header class="dashboard__header">
+  <header class="dashboard_header">
     <div>
-      <p class="dashboard__eyebrow">Human Resource Services</p>
+      <p class="dashboard_eyebrow">Human Resource Services</p>
       <h1>Dashboard</h1>
       <p>Track employee profiles, generate documents, and keep records current.</p>
     </div>
-    <div class="dashboard__stats">
+    <div class="dashboard_stats">
       <article class="stat-card">
-        <p class="stat-card__label">Total Employees</p>
+        <p class="stat-card_label">Total Employees</p>
         <h3>{{ people.length }}</h3>
-        <p class="stat-card__meta">From the person table</p>
+        <p class="stat-card_meta">All employees in the system</p>
       </article>
       <article class="stat-card">
-        <p class="stat-card__label">Active Modules</p>
-        <h3>4</h3>
-        <p class="stat-card__meta">PDS, Employees, PDFs</p>
+        <p class="stat-card_label">Active Employees</p>
+        <h3>0</h3>
+        <p class="stat-card_meta">Active employees in the system</p>
       </article>
     </div>
   </header>
 
-  <section class="dashboard__grid">
+  <section class="dashboard_grid">
     <article class="dashboard-card">
       <h2>PDS Creation</h2>
       <p>Create a new Personal Data Sheet record.</p>
-      <button type="button">Open PDS Creation</button>
+      <button type="button">Create PDS Record</button>
     </article>
 
     <article class="dashboard-card">
-      <h2>Employee List</h2>
-      <p>View all employees with created PDS records.</p>
-      <button type="button">Open Employee List</button>
+      <h2>ID Creation</h2>
+      <p>Create a new Employee ID from the employee list.</p>
+      <button type="button">Create Employee ID</button>
     </article>
 
     <article class="dashboard-card">
@@ -45,56 +45,66 @@
     </article>
   </section>
 
-  <section class="dashboard__table">
-    <div class="table__header">
+  <section class="dashboard_table">
+    <div class="table_header">
       <div>
         <h2>Employee Directory</h2>
-        <p>Latest records pulled from the person table.</p>
+        <p>Records pulled from the employee database.</p>
       </div>
-      <div class="table__actions">
-        <button type="button" class="primary">New Employee</button>
+      <div class="table_actions">
+        <button type="button" class="primary">All Employees List</button>
+        <button type="button" class="primary">Active List</button>
         <button type="button" class="ghost">Export List</button>
       </div>
     </div>
 
-    <div class="table__state" *ngIf="loading">Loading employee records...</div>
-    <div class="table__state error" *ngIf="!loading && errorMessage">{{ errorMessage }}</div>
-    <div class="table__state" *ngIf="!loading && !errorMessage && people.length === 0">
-      No employees found yet. Create a PDS to add the first record.
-    </div>
-
-    <div class="table__wrapper" *ngIf="!loading && !errorMessage && people.length > 0">
-      <table>
-        <thead>
-          <tr>
-            <th>Employee</th>
-            <th>Reference #</th>
-            <th>Type</th>
-            <th>Position</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let person of people">
-            <td class="employee__name">
-              <div class="employee__avatar">
-                <img *ngIf="person.photoUrl; else avatarInitials" [src]="person.photoUrl" alt="Employee photo">
-                <ng-template #avatarInitials>{{ getInitials(person.name) }}</ng-template>
-              </div>
-              <div>
-                <div class="employee__title">{{ person.name || 'Unnamed Employee' }}</div>
-                <div class="employee__meta">ID: {{ person.id }}</div>
-              </div>
-            </td>
-            <td>{{ person.referenceNumber || '—' }}</td>
-            <td>{{ person.type || '—' }}</td>
-            <td>{{ person.position || '—' }}</td>
-            <td>
-              <span class="status-pill">{{ person.status?.option || 'Unassigned' }}</span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    @if (loading) {
+      <div class="table_state">Loading employee records...</div>
+    } @else if (errorMessage) {
+      <div class="table_state error">{{ errorMessage }}</div>
+    } @else if (people.length === 0) {
+      <div class="table_state">
+        No employees found yet. Create a PDS to add the first record.
+      </div>
+    } @else {
+      <div class="table_wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Employee</th>
+              <th>Reference #</th>
+              <th>Type</th>
+              <th>Position</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (person of people; track person.id) {
+              <tr>
+                <td class="employee_name">
+                  <div class="employee_avatar">
+                    @if (person.photoUrl) {
+                      <img [src]="person.photoUrl" alt="Employee photo">
+                    } @else {
+                      {{ getInitials(person.name) }}
+                    }
+                  </div>
+                  <div>
+                    <div class="employee_title">{{ person.name || 'Unnamed Employee' }}</div>
+                    <div class="employee_meta">ID: {{ person.id }}</div>
+                  </div>
+                </td>
+                <td>{{ person.referenceNumber || 'â€”' }}</td>
+                <td>{{ person.type || 'â€”' }}</td>
+                <td>{{ person.position || 'â€”' }}</td>
+                <td>
+                  <span class="status-pill">{{ person.status?.option || 'Unassigned' }}</span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
   </section>
 </section>
