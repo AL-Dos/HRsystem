@@ -1,0 +1,257 @@
+:host {
+  display: block;
+}
+
+.pds-wizard {
+  min-height: 100vh;
+  padding: 2.5rem 3rem 4rem;
+}
+
+.wizard-header {
+  max-width: 80rem;
+  margin: 0 auto 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.wizard-header-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 0.8rem;
+  color: #0f4c81;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.back-link-arrow {
+  font-size: 1.05rem;
+}
+
+.back-link:hover {
+  color: #0b3a63;
+}
+
+.wizard-eyebrow {
+  margin: 0 0 0.4rem;
+  color: #0f4c81;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.wizard-header h1 {
+  margin: 0.6rem 0;
+  color: #ffffff;
+  font-size: 2.2rem;
+}
+
+.wizard-header p,
+.step-link small {
+  margin: 0.4rem 0 0;
+  color: #617287;
+}
+
+.wizard-header p {
+  max-width: 42rem;
+}
+
+.wizard-progress-card {
+  min-width: 280px;
+  background: linear-gradient(135deg, #0f4c81, #1a6aa8);
+  color: #ffffff;
+  padding: 1.2rem 1.35rem;
+  border-radius: 1rem;
+}
+
+.wizard-progress-card span,
+.wizard-progress-card strong,
+.step-link strong,
+.step-link small {
+  display: block;
+}
+
+.wizard-progress-card strong {
+  margin-top: 0.35rem;
+  font-size: 1.05rem;
+}
+
+.progress-track {
+  margin-top: 0.9rem;
+  height: 0.6rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: #ffe08a;
+}
+
+.wizard-shell {
+  max-width: 80rem;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 1.5rem;
+}
+
+.wizard-nav,
+.wizard-form {
+  background: #ffffff;
+  border: 1px solid rgba(15, 76, 129, 0.1);
+  border-radius: 1rem;
+}
+
+.wizard-nav {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  align-self: start;
+  position: sticky;
+  top: 100px;
+}
+
+.step-link {
+  width: 100%;
+  border: 1px solid #d8e6f5;
+  background: #f8fbff;
+  border-radius: 0.9rem;
+  padding: 0.9rem;
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-start;
+  text-align: left;
+  cursor: pointer;
+}
+
+.step-link.active {
+  background: #0f4c81;
+  border-color: #0f4c81;
+  color: #ffffff;
+}
+
+.step-index {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  background: #dceafb;
+  color: #0f4c81;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.step-link.active .step-index {
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+}
+
+.step-link.active small {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.wizard-form {
+  padding: 1.5rem;
+}
+
+button {
+  border: 0;
+  border-radius: 0.75rem;
+  padding: 0.8rem 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.primary {
+  background: #0f4c81;
+  color: #ffffff;
+}
+
+.secondary {
+  background: #e8f1ff;
+  color: #0f4c81;
+}
+
+.ghost {
+  background: transparent;
+  color: #0f4c81;
+  border: 1px solid #cbd8e6;
+}
+
+.wizard-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e6edf5;
+}
+
+.action-group {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.form-message {
+  margin: 1rem 0 0;
+  padding: 0.85rem 1rem;
+  border-radius: 0.75rem;
+  background: #eef6ff;
+  color: #0f4c81;
+  font-weight: 600;
+}
+
+@media (max-width: 960px) {
+  .pds-wizard {
+    padding: 1.5rem;
+  }
+
+  .wizard-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .wizard-nav {
+    position: static;
+  }
+}
+
+@media (max-width: 720px) {
+  .wizard-header h1 {
+    font-size: 1.7rem;
+  }
+
+  .wizard-form,
+  .action-group,
+  .wizard-actions {
+    padding: 1rem;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .action-group,
+  .action-group button,
+  .wizard-actions > button {
+    width: 100%;
+  }
+}

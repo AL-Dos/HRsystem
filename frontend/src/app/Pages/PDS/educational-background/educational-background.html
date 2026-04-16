@@ -1,0 +1,43 @@
+<section class="form-step" [formGroup]="group()">
+  <div class="section-heading">
+    <h2>Educational Background</h2>
+    <p>Repeatable school records based on `EducationEntry` and `EducationLevel`.</p>
+  </div>
+
+  <div class="repeatable-header">
+    <div>
+      <h3>Education Entries</h3>
+      <p>Add one row set per level completed or attended.</p>
+    </div>
+    <button type="button" class="secondary" (click)="addEntry.emit()">Add Entry</button>
+  </div>
+
+  <div formArrayName="entries" class="repeatable-list">
+    @for (entry of entries().controls; track $index; let index = $index) {
+      <div class="repeatable-card" [formGroupName]="index">
+        <div class="repeatable-card-header">
+          <strong>Education Entry {{ index + 1 }}</strong>
+          <button type="button" class="ghost" (click)="removeEntry.emit(index)">Remove</button>
+        </div>
+        <div class="form-grid">
+          <label>
+            <span>Education Level</span>
+            <select formControlName="educationLevel">
+              <option value="">Select level</option>
+              @for (option of educationLevelOptions(); track option) {
+                <option [value]="option">{{ option }}</option>
+              }
+            </select>
+          </label>
+          <label><span>School Name</span><input type="text" formControlName="schoolName" /></label>
+          <label><span>Course / Degree</span><input type="text" formControlName="course" /></label>
+          <label><span>Attendance From</span><input type="date" formControlName="attendanceFrom" /></label>
+          <label><span>Attendance To</span><input type="date" formControlName="attendanceTo" /></label>
+          <label><span>Level Earned</span><input type="text" formControlName="levelEarned" /></label>
+          <label><span>Graduation Date</span><input type="date" formControlName="graduateDate" /></label>
+          <label class="full-span"><span>Scholarship / Honors</span><input type="text" formControlName="scholarshipHonors" /></label>
+        </div>
+      </div>
+    }
+  </div>
+</section>

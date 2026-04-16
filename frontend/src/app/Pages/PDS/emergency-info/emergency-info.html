@@ -1,0 +1,37 @@
+<section class="form-step" [formGroup]="group()">
+  <div class="section-heading">
+    <h2>Emergency Information</h2>
+    <p>Single contact record based on `EmergencyInfo`.</p>
+  </div>
+
+  <div class="form-grid">
+    <label>
+      <span>Contact Name</span>
+      <input type="text" formControlName="contactName" [class.invalid-field]="showError('contactName')" />
+      @if (showError('contactName')) {
+        <small class="field-error">Contact name is required.</small>
+      }
+    </label>
+    <label>
+      <span>Relationship</span>
+      <input type="text" formControlName="relationship" [class.invalid-field]="showError('relationship')" />
+      @if (showError('relationship')) {
+        <small class="field-error">Relationship is required.</small>
+      }
+    </label>
+    <label>
+      <span>Contact Number</span>
+      <input type="text" formControlName="contactNo" [class.invalid-field]="showError('contactNo')" />
+      @if (showError('contactNo')) {
+        <small class="field-error">Contact number is required.</small>
+      }
+    </label>
+    <label class="full-span">
+      <span>Address</span>
+      <input type="text" formControlName="address" [class.invalid-field]="showError('address')" />
+      @if (showError('address')) {
+        <small class="field-error">Address is required.</small>
+      }
+    </label>
+  </div>
+</section>

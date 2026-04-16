@@ -1,0 +1,38 @@
+<section class="form-step" [formGroup]="group()">
+  <div class="section-heading">
+    <h2>Work Experience</h2>
+    <p>Employment history from `WorkExperience`, including government service tagging.</p>
+  </div>
+
+  <div class="repeatable-header">
+    <div>
+      <h3>Work Experience Entries</h3>
+      <p>Add prior and current appointments in chronological order.</p>
+    </div>
+    <button type="button" class="secondary" (click)="addEntry.emit()">Add Entry</button>
+  </div>
+
+  <div formArrayName="entries" class="repeatable-list">
+    @for (entry of entries().controls; track $index; let index = $index) {
+      <div class="repeatable-card" [formGroupName]="index">
+        <div class="repeatable-card-header">
+          <strong>Work Experience Entry {{ index + 1 }}</strong>
+          <button type="button" class="ghost" (click)="removeEntry.emit(index)">Remove</button>
+        </div>
+        <div class="form-grid">
+          <label><span>From</span><input type="date" formControlName="datesFrom" /></label>
+          <label><span>To</span><input type="date" formControlName="datesTo" /></label>
+          <label><span>Position Title</span><input type="text" formControlName="positionTitle" /></label>
+          <label><span>Department / Agency / Company</span><input type="text" formControlName="company" /></label>
+          <label><span>Salary</span><input type="text" formControlName="salary" /></label>
+          <label><span>Pay Grade</span><input type="text" formControlName="payGrade" /></label>
+          <label><span>Status of Appointment</span><input type="text" formControlName="status" /></label>
+          <label class="checkbox-field">
+            <input type="checkbox" formControlName="govService" />
+            <span>Government Service</span>
+          </label>
+        </div>
+      </div>
+    }
+  </div>
+</section>

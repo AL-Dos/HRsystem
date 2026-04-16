@@ -1,0 +1,33 @@
+<section class="form-step" [formGroup]="group()">
+  <div class="section-heading">
+    <h2>Training &amp; Development</h2>
+    <p>Learning interventions and seminars from `TrainingDevelopment`.</p>
+  </div>
+
+  <div class="repeatable-header">
+    <div>
+      <h3>Training Entries</h3>
+      <p>Capture all relevant learning and development programs attended.</p>
+    </div>
+    <button type="button" class="secondary" (click)="addEntry.emit()">Add Entry</button>
+  </div>
+
+  <div formArrayName="entries" class="repeatable-list">
+    @for (entry of entries().controls; track $index; let index = $index) {
+      <div class="repeatable-card" [formGroupName]="index">
+        <div class="repeatable-card-header">
+          <strong>Training Entry {{ index + 1 }}</strong>
+          <button type="button" class="ghost" (click)="removeEntry.emit(index)">Remove</button>
+        </div>
+        <div class="form-grid">
+          <label><span>Title</span><input type="text" formControlName="title" /></label>
+          <label><span>From</span><input type="date" formControlName="attendFrom" /></label>
+          <label><span>To</span><input type="date" formControlName="attendTo" /></label>
+          <label><span>Hours</span><input type="number" formControlName="hours" /></label>
+          <label><span>Type</span><input type="text" formControlName="typeOf" /></label>
+          <label><span>Sponsored By</span><input type="text" formControlName="sponsoredBy" /></label>
+        </div>
+      </div>
+    }
+  </div>
+</section>

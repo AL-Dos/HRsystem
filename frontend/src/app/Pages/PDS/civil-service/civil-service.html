@@ -1,0 +1,33 @@
+<section class="form-step" [formGroup]="group()">
+  <div class="section-heading">
+    <h2>Civil Service</h2>
+    <p>Eligibility exams, ratings, licenses, and validity dates.</p>
+  </div>
+
+  <div class="repeatable-header">
+    <div>
+      <h3>Civil Service Entries</h3>
+      <p>Add all relevant eligibilities or examinations.</p>
+    </div>
+    <button type="button" class="secondary" (click)="addEntry.emit()">Add Entry</button>
+  </div>
+
+  <div formArrayName="entries" class="repeatable-list">
+    @for (entry of entries().controls; track $index; let index = $index) {
+      <div class="repeatable-card" [formGroupName]="index">
+        <div class="repeatable-card-header">
+          <strong>Civil Service Entry {{ index + 1 }}</strong>
+          <button type="button" class="ghost" (click)="removeEntry.emit(index)">Remove</button>
+        </div>
+        <div class="form-grid">
+          <label><span>Career Service / RA 1080 / Exam</span><input type="text" formControlName="cse" /></label>
+          <label><span>Rating</span><input type="number" step="0.01" formControlName="rating" /></label>
+          <label><span>Exam Date</span><input type="date" formControlName="examDate" /></label>
+          <label><span>Exam Place</span><input type="text" formControlName="examPlace" /></label>
+          <label><span>License Number</span><input type="text" formControlName="licenseNumber" /></label>
+          <label><span>Validity Date</span><input type="date" formControlName="validityDate" /></label>
+        </div>
+      </div>
+    }
+  </div>
+</section>

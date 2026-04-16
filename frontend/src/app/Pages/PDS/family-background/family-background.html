@@ -1,0 +1,56 @@
+<section class="form-step" [formGroup]="group()">
+  <div class="section-heading">
+    <h2>Family Background</h2>
+    <p>Spouse, parents, and children based on `FamilyBackground` and `Child` models.</p>
+  </div>
+
+  <div class="section-heading compact">
+    <h3>Spouse</h3>
+  </div>
+  <div class="form-grid">
+    <label><span>First Name</span><input type="text" formControlName="spouseFname" /></label>
+    <label><span>Surname</span><input type="text" formControlName="spouseSurname" /></label>
+    <label><span>Middle Name</span><input type="text" formControlName="spouseMname" /></label>
+    <label><span>Extension</span><input type="text" formControlName="spouseExtensions" /></label>
+    <label><span>Occupation</span><input type="text" formControlName="spouseOccupation" /></label>
+    <label><span>Employer / Business Name</span><input type="text" formControlName="spouseEmployeer" /></label>
+    <label class="full-span"><span>Business Address</span><input type="text" formControlName="spouseJobAddress" /></label>
+    <label><span>Telephone</span><input type="text" formControlName="telephone" /></label>
+  </div>
+
+  <div class="section-heading compact">
+    <h3>Parents</h3>
+  </div>
+  <div class="form-grid">
+    <label><span>Father First Name</span><input type="text" formControlName="fatherFname" /></label>
+    <label><span>Father Surname</span><input type="text" formControlName="fatherSurname" /></label>
+    <label><span>Father Middle Name</span><input type="text" formControlName="fatherMname" /></label>
+    <label><span>Father Extension</span><input type="text" formControlName="fatherExtensions" /></label>
+    <label><span>Mother First Name</span><input type="text" formControlName="motherFname" /></label>
+    <label><span>Mother Surname</span><input type="text" formControlName="motherSurname" /></label>
+    <label><span>Mother Middle Name</span><input type="text" formControlName="motherMname" /></label>
+  </div>
+
+  <div class="repeatable-header">
+    <div>
+      <h3>Children</h3>
+      <p>Use multiple rows for each child record.</p>
+    </div>
+    <button type="button" class="secondary" (click)="addChild.emit()">Add Child</button>
+  </div>
+
+  <div formArrayName="children" class="repeatable-list">
+    @for (child of children().controls; track $index; let index = $index) {
+      <div class="repeatable-card" [formGroupName]="index">
+        <div class="repeatable-card-header">
+          <strong>Child {{ index + 1 }}</strong>
+          <button type="button" class="ghost" (click)="removeChild.emit(index)">Remove</button>
+        </div>
+        <div class="form-grid">
+          <label><span>Child Name</span><input type="text" formControlName="childName" /></label>
+          <label><span>Birth Date</span><input type="date" formControlName="birthDate" /></label>
+        </div>
+      </div>
+    }
+  </div>
+</section>

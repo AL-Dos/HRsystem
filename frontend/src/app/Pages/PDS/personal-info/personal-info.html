@@ -1,0 +1,119 @@
+<section class="form-step" [formGroup]="group()">
+  <div class="section-heading">
+    <h2>Personal Information</h2>
+    <p>Fields based on `PersonalInfoDTO`, excluding person linkage fields.</p>
+  </div>
+
+  <div class="form-grid">
+    <label>
+      <span>First Name</span>
+      <input type="text" formControlName="firstName" [class.invalid-field]="showError('firstName')" />
+      @if (showError('firstName', 'required')) {
+        <small class="field-error">First name is required.</small>
+      }
+    </label>
+    <label>
+      <span>Surname</span>
+      <input type="text" formControlName="surname" [class.invalid-field]="showError('surname')" />
+      @if (showError('surname', 'required')) {
+        <small class="field-error">Surname is required.</small>
+      }
+    </label>
+    <label><span>Middle Name</span><input type="text" formControlName="middleName" /></label>
+    <label><span>Extension</span><input type="text" formControlName="extensions" /></label>
+    <label><span>Birth Date</span><input type="date" formControlName="birthDate" /></label>
+    <label><span>Place of Birth</span><input type="text" formControlName="placeBirth" /></label>
+    <label>
+      <span>Sex</span>
+      <select formControlName="sex" [class.invalid-field]="showError('sex')">
+        <option value="">Select sex</option>
+        @for (option of sexOptions(); track option) {
+          <option [value]="option">{{ option }}</option>
+        }
+      </select>
+      @if (showError('sex', 'required')) {
+        <small class="field-error">Sex is required.</small>
+      }
+    </label>
+    <label>
+      <span>Civil Status</span>
+      <select formControlName="civilStatus" [class.invalid-field]="showError('civilStatus')">
+        <option value="">Select status</option>
+        @for (option of civilStatusOptions(); track option) {
+          <option [value]="option">{{ option }}</option>
+        }
+      </select>
+      @if (showError('civilStatus', 'required')) {
+        <small class="field-error">Civil status is required.</small>
+      }
+    </label>
+    <label><span>Civil Status Other</span><input type="text" formControlName="civilOther" /></label>
+    <label><span>Blood Type</span><input type="text" formControlName="bloodType" /></label>
+    <label><span>Height (m)</span><input type="number" step="0.01" formControlName="heightM" /></label>
+    <label><span>Weight (kg)</span><input type="number" step="0.01" formControlName="weightKg" /></label>
+  </div>
+
+  <div class="section-heading compact">
+    <h3>Government and Employment Numbers</h3>
+  </div>
+
+  <div class="form-grid">
+    <label><span>GSIS ID</span><input type="text" formControlName="gsisId" /></label>
+    <label><span>Pag-IBIG ID</span><input type="text" formControlName="pagibigId" /></label>
+    <label><span>PhilHealth ID</span><input type="text" formControlName="phealthId" /></label>
+    <label><span>SSS No.</span><input type="text" formControlName="sssNo" /></label>
+    <label><span>TIN No.</span><input type="text" formControlName="tinNo" /></label>
+    <label><span>Employee No.</span><input type="text" formControlName="employeeNo" /></label>
+  </div>
+
+  <div class="section-heading compact">
+    <h3>Citizenship and Contact Details</h3>
+  </div>
+
+  <div class="form-grid">
+    <label>
+      <span>Citizenship Type</span>
+      <select formControlName="citizenshipType">
+        <option value="">Select type</option>
+        @for (option of citizenshipTypeOptions(); track option) {
+          <option [value]="option">{{ option }}</option>
+        }
+      </select>
+    </label>
+    <label>
+      <span>Citizen Status</span>
+      <select formControlName="citizenStatus">
+        <option value="">Select status</option>
+        @for (option of citizenStatusOptions(); track option) {
+          <option [value]="option">{{ option }}</option>
+        }
+      </select>
+    </label>
+    <label><span>Dual Citizen Country</span><input type="text" formControlName="dualCitizenCountry" /></label>
+    <label><span>Address No.</span><input type="text" formControlName="addressNo" /></label>
+    <label><span>Street</span><input type="text" formControlName="addressSt" /></label>
+    <label><span>Subdivision</span><input type="text" formControlName="addressSub" /></label>
+    <label><span>Barangay</span><input type="text" formControlName="addressBarangay" /></label>
+    <label><span>City / Municipality</span><input type="text" formControlName="addressCity" /></label>
+    <label><span>Province</span><input type="text" formControlName="addressProvince" /></label>
+    <label><span>Postal Code</span><input type="text" formControlName="addressCode" /></label>
+    <label><span>Telephone</span><input type="text" formControlName="telephone" /></label>
+    <label>
+      <span>Mobile</span>
+      <input type="text" formControlName="mobile" [class.invalid-field]="showError('mobile')" />
+      @if (showError('mobile', 'required')) {
+        <small class="field-error">Mobile number is required.</small>
+      }
+    </label>
+    <label class="full-span">
+      <span>Email Address</span>
+      <input type="email" formControlName="email" [class.invalid-field]="showError('email')" />
+      @if (showError('email', 'required')) {
+        <small class="field-error">Email address is required.</small>
+      }
+      @if (showError('email', 'email')) {
+        <small class="field-error">Enter a valid email address.</small>
+      }
+    </label>
+  </div>
+</section>

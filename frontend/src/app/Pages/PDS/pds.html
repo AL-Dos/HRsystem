@@ -1,0 +1,123 @@
+<section class="pds-wizard">
+  <header class="wizard-header">
+    <div class="wizard-header-copy">
+      <a class="back-link" routerLink="/">
+        <span class="back-link-arrow" aria-hidden="true">?</span>
+        <span>Go Back</span>
+      </a>
+      <p class="wizard-eyebrow">PDS Creation</p>
+      <h1>Personal Data Sheet</h1>
+      <p>
+        The form is split from personal details through emergency contact information, following
+        your backend model order.
+      </p>
+    </div>
+    <div class="wizard-progress-card">
+      <span>Step {{ currentStep() + 1 }} of {{ steps.length }}</span>
+      <strong>{{ currentStepMeta().label }}</strong>
+      <div class="progress-track" aria-hidden="true">
+        <div class="progress-bar" [style.width.%]="progressPercentage()"></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="wizard-shell">
+    <aside class="wizard-nav" aria-label="PDS sections">
+      @for (step of steps; track step.key; let index = $index) {
+        <button
+          type="button"
+          class="step-link"
+          [class.active]="index === currentStep()"
+          [class.complete]="index < currentStep()"
+          (click)="jumpToStep(index)"
+        >
+          <span class="step-index">{{ index + 1 }}</span>
+          <span>
+            <strong>{{ step.label }}</strong>
+            <small>{{ step.description }}</small>
+          </span>
+        </button>
+      }
+    </aside>
+
+    <form class="wizard-form" [formGroup]="pdsForm" (ngSubmit)="submit()">
+      @if (currentStep() === 0) {
+        <app-pds-personal-info
+          [group]="personalInfoGroup"
+          [sexOptions]="sexOptions"
+          [civilStatusOptions]="civilStatusOptions"
+          [citizenshipTypeOptions]="citizenshipTypeOptions"
+          [citizenStatusOptions]="citizenStatusOptions"
+        />
+      }
+
+      @if (currentStep() === 1) {
+        <app-pds-family-background
+          [group]="familyBackgroundGroup"
+          [children]="familyChildren"
+          (addChild)="addChild()"
+          (removeChild)="removeChild($event)"
+        />
+      }
+
+      @if (currentStep() === 2) {
+        <app-pds-educational-background
+          [group]="educBackgroundGroup"
+          [entries]="educationEntries"
+          [educationLevelOptions]="educationLevelOptions"
+          (addEntry)="addEducationEntry()"
+          (removeEntry)="removeEducationEntry($event)"
+        />
+      }
+
+      @if (currentStep() === 3) {
+        <app-pds-civil-service
+          [group]="civilServiceGroup"
+          [entries]="civilServiceEntries"
+          (addEntry)="addCivilServiceEntry()"
+          (removeEntry)="removeCivilServiceEntry($event)"
+        />
+      }
+
+      @if (currentStep() === 4) {
+        <app-pds-work-experience
+          [group]="workExperienceGroup"
+          [entries]="workExperienceEntries"
+          (addEntry)="addWorkExperienceEntry()"
+          (removeEntry)="removeWorkExperienceEntry($event)"
+        />
+      }
+
+      @if (currentStep() === 5) {
+        <app-pds-training-development
+          [group]="trainingDevelopmentGroup"
+          [entries]="trainingEntries"
+          (addEntry)="addTrainingEntry()"
+          (removeEntry)="removeTrainingEntry($event)"
+        />
+      }
+
+      @if (currentStep() === 6) {
+        <app-pds-emergency-info [group]="emergencyInfoGroup" />
+      }
+
+      <footer class="wizard-actions">
+        <button type="button" class="ghost" (click)="saveDraft()">Save Draft</button>
+        <div class="action-group">
+          <button type="button" class="secondary" (click)="previousStep()" [disabled]="currentStep() === 0">
+            Previous
+          </button>
+          @if (currentStep() < steps.length - 1) {
+            <button type="button" class="primary" (click)="nextStep()">Next Section</button>
+          } @else {
+            <button type="submit" class="primary">Submit PDS</button>
+          }
+        </div>
+      </footer>
+
+      @if (submitMessage()) {
+        <p class="form-message">{{ submitMessage() }}</p>
+      }
+    </form>
+  </div>
+</section>

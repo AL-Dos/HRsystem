@@ -23,7 +23,7 @@
     <article class="dashboard-card">
       <h2>PDS Creation</h2>
       <p>Create a new Personal Data Sheet record.</p>
-      <button type="button">Create PDS Record</button>
+      <button type="button" routerLink="/pds">Create PDS Record</button>
     </article>
 
     <article class="dashboard-card">
@@ -94,9 +94,9 @@
                     <div class="employee_meta">ID: {{ person.id }}</div>
                   </div>
                 </td>
-                <td>{{ person.referenceNumber || 'â€”' }}</td>
-                <td>{{ person.type || 'â€”' }}</td>
-                <td>{{ person.position || 'â€”' }}</td>
+                <td>{{ person.referenceNumber || '�' }}</td>
+                <td>{{ person.type || '�' }}</td>
+                <td>{{ person.position || '�' }}</td>
                 <td>
                   <span class="status-pill">{{ person.status?.option || 'Unassigned' }}</span>
                 </td>
