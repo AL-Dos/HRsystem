@@ -25,7 +25,7 @@ public class Person {
     private String signature;
 
     @Column(name = "type")
-    private String type;
+    private boolean type;
     @Column(name = "position")
     private String position;
 

@@ -10,7 +10,7 @@ public class PersonDTO {
     private String photoUrl;
     private String referenceNumber;
     private String signature;
-    private String type;
+    private boolean type;
     private String position;
     private StatusDTO status;
     private String name;

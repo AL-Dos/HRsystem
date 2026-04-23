@@ -6,7 +6,7 @@ import lombok.Data;
 public class PersonUpdateDTO {
     private String photoUrl;
     private String signature;
-    private String type;
+    private boolean type;
     private String position;
     private Integer statusId;
     private String name;
